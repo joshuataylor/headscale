@@ -21,19 +21,7 @@ message ClientSupports {
     bool upnp         = 6;
 }
 
-message ClientConnectivity {
-    repeated string      endpoints                 = 1;
-    string               derp                      = 2;
-    bool                 mapping_varies_by_dest_ip = 3;
-    map<string, Latency> latency                   = 4;
-    ClientSupports       client_supports           = 5;
-}
-
-message GetDeviceRequest {
-    string id = 1;
-}
-
-message GetDeviceResponse {
+message Device {
     repeated string           addresses                   = 1;
     string                    id                          = 2;
     string                    user                        = 3;
@@ -54,6 +42,30 @@ message GetDeviceResponse {
     repeated string           enabled_routes              = 18;
     repeated string           advertised_routes           = 19;
     ClientConnectivity        client_connectivity         = 20;
+}
+
+message ListDevicesRequest {
+    string namespace = 1;
+}
+
+message ListDevicesResponse {
+    repeated Device devices = 1;
+}
+
+message ClientConnectivity {
+    repeated string      endpoints                 = 1;
+    string               derp                      = 2;
+    bool                 mapping_varies_by_dest_ip = 3;
+    map<string, Latency> latency                   = 4;
+    ClientSupports       client_supports           = 5;
+}
+
+message GetDeviceRequest {
+    string id = 1;
+}
+
+message GetDeviceResponse {
+    Device device = 1;
 }
 
 message DeleteDeviceRequest {

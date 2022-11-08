@@ -49,6 +49,12 @@ type HeadscaleServiceClient interface {
 	CreateApiKey(ctx context.Context, in *CreateApiKeyRequest, opts ...grpc.CallOption) (*CreateApiKeyResponse, error)
 	ExpireApiKey(ctx context.Context, in *ExpireApiKeyRequest, opts ...grpc.CallOption) (*ExpireApiKeyResponse, error)
 	ListApiKeys(ctx context.Context, in *ListApiKeysRequest, opts ...grpc.CallOption) (*ListApiKeysResponse, error)
+	// Implement Tailscale API
+	ListDevices(ctx context.Context, in *ListDevicesRequest, opts ...grpc.CallOption) (*ListDevicesResponse, error)
+	GetDevice(ctx context.Context, in *GetDeviceRequest, opts ...grpc.CallOption) (*GetDeviceResponse, error)
+	DeleteDevice(ctx context.Context, in *DeleteDeviceRequest, opts ...grpc.CallOption) (*DeleteDeviceResponse, error)
+	GetDeviceRoutes(ctx context.Context, in *GetDeviceRoutesRequest, opts ...grpc.CallOption) (*GetDeviceRoutesResponse, error)
+	EnableDeviceRoutes(ctx context.Context, in *EnableDeviceRoutesRequest, opts ...grpc.CallOption) (*EnableDeviceRoutesResponse, error)
 }
 
 type headscaleServiceClient struct {
@@ -257,6 +263,51 @@ func (c *headscaleServiceClient) ListApiKeys(ctx context.Context, in *ListApiKey
 	return out, nil
 }
 
+func (c *headscaleServiceClient) ListDevices(ctx context.Context, in *ListDevicesRequest, opts ...grpc.CallOption) (*ListDevicesResponse, error) {
+	out := new(ListDevicesResponse)
+	err := c.cc.Invoke(ctx, "/headscale.v1.HeadscaleService/ListDevices", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *headscaleServiceClient) GetDevice(ctx context.Context, in *GetDeviceRequest, opts ...grpc.CallOption) (*GetDeviceResponse, error) {
+	out := new(GetDeviceResponse)
+	err := c.cc.Invoke(ctx, "/headscale.v1.HeadscaleService/GetDevice", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *headscaleServiceClient) DeleteDevice(ctx context.Context, in *DeleteDeviceRequest, opts ...grpc.CallOption) (*DeleteDeviceResponse, error) {
+	out := new(DeleteDeviceResponse)
+	err := c.cc.Invoke(ctx, "/headscale.v1.HeadscaleService/DeleteDevice", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *headscaleServiceClient) GetDeviceRoutes(ctx context.Context, in *GetDeviceRoutesRequest, opts ...grpc.CallOption) (*GetDeviceRoutesResponse, error) {
+	out := new(GetDeviceRoutesResponse)
+	err := c.cc.Invoke(ctx, "/headscale.v1.HeadscaleService/GetDeviceRoutes", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *headscaleServiceClient) EnableDeviceRoutes(ctx context.Context, in *EnableDeviceRoutesRequest, opts ...grpc.CallOption) (*EnableDeviceRoutesResponse, error) {
+	out := new(EnableDeviceRoutesResponse)
+	err := c.cc.Invoke(ctx, "/headscale.v1.HeadscaleService/EnableDeviceRoutes", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HeadscaleServiceServer is the server API for HeadscaleService service.
 // All implementations must embed UnimplementedHeadscaleServiceServer
 // for forward compatibility
@@ -288,6 +339,12 @@ type HeadscaleServiceServer interface {
 	CreateApiKey(context.Context, *CreateApiKeyRequest) (*CreateApiKeyResponse, error)
 	ExpireApiKey(context.Context, *ExpireApiKeyRequest) (*ExpireApiKeyResponse, error)
 	ListApiKeys(context.Context, *ListApiKeysRequest) (*ListApiKeysResponse, error)
+	// Implement Tailscale API
+	ListDevices(context.Context, *ListDevicesRequest) (*ListDevicesResponse, error)
+	GetDevice(context.Context, *GetDeviceRequest) (*GetDeviceResponse, error)
+	DeleteDevice(context.Context, *DeleteDeviceRequest) (*DeleteDeviceResponse, error)
+	GetDeviceRoutes(context.Context, *GetDeviceRoutesRequest) (*GetDeviceRoutesResponse, error)
+	EnableDeviceRoutes(context.Context, *EnableDeviceRoutesRequest) (*EnableDeviceRoutesResponse, error)
 	mustEmbedUnimplementedHeadscaleServiceServer()
 }
 
@@ -360,6 +417,21 @@ func (UnimplementedHeadscaleServiceServer) ExpireApiKey(context.Context, *Expire
 }
 func (UnimplementedHeadscaleServiceServer) ListApiKeys(context.Context, *ListApiKeysRequest) (*ListApiKeysResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListApiKeys not implemented")
+}
+func (UnimplementedHeadscaleServiceServer) ListDevices(context.Context, *ListDevicesRequest) (*ListDevicesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListDevices not implemented")
+}
+func (UnimplementedHeadscaleServiceServer) GetDevice(context.Context, *GetDeviceRequest) (*GetDeviceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDevice not implemented")
+}
+func (UnimplementedHeadscaleServiceServer) DeleteDevice(context.Context, *DeleteDeviceRequest) (*DeleteDeviceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteDevice not implemented")
+}
+func (UnimplementedHeadscaleServiceServer) GetDeviceRoutes(context.Context, *GetDeviceRoutesRequest) (*GetDeviceRoutesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDeviceRoutes not implemented")
+}
+func (UnimplementedHeadscaleServiceServer) EnableDeviceRoutes(context.Context, *EnableDeviceRoutesRequest) (*EnableDeviceRoutesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnableDeviceRoutes not implemented")
 }
 func (UnimplementedHeadscaleServiceServer) mustEmbedUnimplementedHeadscaleServiceServer() {}
 
@@ -770,6 +842,96 @@ func _HeadscaleService_ListApiKeys_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HeadscaleService_ListDevices_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListDevicesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HeadscaleServiceServer).ListDevices(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/headscale.v1.HeadscaleService/ListDevices",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HeadscaleServiceServer).ListDevices(ctx, req.(*ListDevicesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HeadscaleService_GetDevice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDeviceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HeadscaleServiceServer).GetDevice(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/headscale.v1.HeadscaleService/GetDevice",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HeadscaleServiceServer).GetDevice(ctx, req.(*GetDeviceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HeadscaleService_DeleteDevice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteDeviceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HeadscaleServiceServer).DeleteDevice(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/headscale.v1.HeadscaleService/DeleteDevice",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HeadscaleServiceServer).DeleteDevice(ctx, req.(*DeleteDeviceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HeadscaleService_GetDeviceRoutes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDeviceRoutesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HeadscaleServiceServer).GetDeviceRoutes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/headscale.v1.HeadscaleService/GetDeviceRoutes",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HeadscaleServiceServer).GetDeviceRoutes(ctx, req.(*GetDeviceRoutesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HeadscaleService_EnableDeviceRoutes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EnableDeviceRoutesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HeadscaleServiceServer).EnableDeviceRoutes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/headscale.v1.HeadscaleService/EnableDeviceRoutes",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HeadscaleServiceServer).EnableDeviceRoutes(ctx, req.(*EnableDeviceRoutesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // HeadscaleService_ServiceDesc is the grpc.ServiceDesc for HeadscaleService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -864,6 +1026,26 @@ var HeadscaleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListApiKeys",
 			Handler:    _HeadscaleService_ListApiKeys_Handler,
+		},
+		{
+			MethodName: "ListDevices",
+			Handler:    _HeadscaleService_ListDevices_Handler,
+		},
+		{
+			MethodName: "GetDevice",
+			Handler:    _HeadscaleService_GetDevice_Handler,
+		},
+		{
+			MethodName: "DeleteDevice",
+			Handler:    _HeadscaleService_DeleteDevice_Handler,
+		},
+		{
+			MethodName: "GetDeviceRoutes",
+			Handler:    _HeadscaleService_GetDeviceRoutes_Handler,
+		},
+		{
+			MethodName: "EnableDeviceRoutes",
+			Handler:    _HeadscaleService_EnableDeviceRoutes_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

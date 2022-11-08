@@ -1172,30 +1172,46 @@ type HostInfo struct {
 	// string on Linux, like "Debian 10.4; kernel=xxx; container; env=kn" and so
 	// on. As of Tailscale 1.32, this is simply the kernel version on Linux, like
 	// "5.10.0-17-amd64".
-	OsVersion       string   `protobuf:"bytes,5,opt,name=os_version,json=osVersion,proto3" json:"os_version,omitempty"`
-	Container       bool     `protobuf:"varint,6,opt,name=container,proto3" json:"container,omitempty"`
-	Env             string   `protobuf:"bytes,7,opt,name=env,proto3" json:"env,omitempty"`
-	Distro          string   `protobuf:"bytes,8,opt,name=distro,proto3" json:"distro,omitempty"`
-	DistroVersion   string   `protobuf:"bytes,9,opt,name=distro_version,json=distroVersion,proto3" json:"distro_version,omitempty"`
-	DistroCodename  string   `protobuf:"bytes,10,opt,name=distro_codename,json=distroCodename,proto3" json:"distro_codename,omitempty"`
-	Desktop         bool     `protobuf:"varint,11,opt,name=desktop,proto3" json:"desktop,omitempty"`
-	Package         string   `protobuf:"bytes,12,opt,name=package,proto3" json:"package,omitempty"`
-	DeviceModel     string   `protobuf:"bytes,13,opt,name=device_model,json=deviceModel,proto3" json:"device_model,omitempty"`
-	Hostname        string   `protobuf:"bytes,14,opt,name=hostname,proto3" json:"hostname,omitempty"`
-	ShieldsUp       bool     `protobuf:"varint,15,opt,name=shields_up,json=shieldsUp,proto3" json:"shields_up,omitempty"`
-	ShareeNode      bool     `protobuf:"varint,16,opt,name=sharee_node,json=shareeNode,proto3" json:"sharee_node,omitempty"`
-	NoLogsNoSupport bool     `protobuf:"varint,17,opt,name=no_logs_no_support,json=noLogsNoSupport,proto3" json:"no_logs_no_support,omitempty"`
-	GoArch          string   `protobuf:"bytes,18,opt,name=go_arch,json=goArch,proto3" json:"go_arch,omitempty"`
-	GoVersion       string   `protobuf:"bytes,19,opt,name=go_version,json=goVersion,proto3" json:"go_version,omitempty"`
-	RouteableIps    []string `protobuf:"bytes,20,rep,name=routeable_ips,json=routeableIps,proto3" json:"routeable_ips,omitempty"`
-	RequestTags     []string `protobuf:"bytes,21,rep,name=request_tags,json=requestTags,proto3" json:"request_tags,omitempty"`
-	// @todo When services is implemented, add it here
-	// services = 22;
-	// @todo netinfo, code 23
-	SshHostKeys      []string `protobuf:"bytes,24,rep,name=ssh_host_keys,json=sshHostKeys,proto3" json:"ssh_host_keys,omitempty"`
-	Cloud            string   `protobuf:"bytes,25,opt,name=cloud,proto3" json:"cloud,omitempty"`
-	UserspaceVersion bool     `protobuf:"varint,26,opt,name=userspace_version,json=userspaceVersion,proto3" json:"userspace_version,omitempty"`
-	UserspaceRouter  bool     `protobuf:"varint,27,opt,name=userspace_router,json=userspaceRouter,proto3" json:"userspace_router,omitempty"`
+	OsVersion string `protobuf:"bytes,5,opt,name=os_version,json=osVersion,proto3" json:"os_version,omitempty"`
+	// whether the client is running in a container
+	Container bool `protobuf:"varint,6,opt,name=container,proto3" json:"container,omitempty"`
+	// a hostinfo.EnvType in string form
+	Env string `protobuf:"bytes,7,opt,name=env,proto3" json:"env,omitempty"`
+	// "debian", "ubuntu", "nixos", ...
+	Distro string `protobuf:"bytes,8,opt,name=distro,proto3" json:"distro,omitempty"`
+	// "20.04", ...
+	DistroVersion string `protobuf:"bytes,9,opt,name=distro_version,json=distroVersion,proto3" json:"distro_version,omitempty"`
+	// "jammy", "bullseye", ...
+	DistroCodename string `protobuf:"bytes,10,opt,name=distro_codename,json=distroCodename,proto3" json:"distro_codename,omitempty"`
+	// if a desktop was detected on Linux
+	Desktop bool `protobuf:"varint,11,opt,name=desktop,proto3" json:"desktop,omitempty"`
+	// Tailscale package to disambiguate ("choco", "appstore", etc; "" for unknown)
+	Package string `protobuf:"bytes,12,opt,name=package,proto3" json:"package,omitempty"`
+	// mobile phone model ("Pixel 3a", "iPhone12,3")
+	DeviceModel string `protobuf:"bytes,13,opt,name=device_model,json=deviceModel,proto3" json:"device_model,omitempty"`
+	// name of the host the client runs on
+	Hostname string `protobuf:"bytes,14,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	// indicates whether the host is blocking incoming connections
+	ShieldsUp bool `protobuf:"varint,15,opt,name=shields_up,json=shieldsUp,proto3" json:"shields_up,omitempty"`
+	// indicates this node exists in netmap because it's owned by a shared-to user
+	ShareeNode bool `protobuf:"varint,16,opt,name=sharee_node,json=shareeNode,proto3" json:"sharee_node,omitempty"`
+	// indicates that the user has opted out of sending logs and support
+	NoLogsNoSupport bool `protobuf:"varint,17,opt,name=no_logs_no_support,json=noLogsNoSupport,proto3" json:"no_logs_no_support,omitempty"`
+	// the host's GOARCH value (of the running binary)
+	GoArch string `protobuf:"bytes,18,opt,name=go_arch,json=goArch,proto3" json:"go_arch,omitempty"`
+	// Go version binary was built with
+	GoVersion string `protobuf:"bytes,19,opt,name=go_version,json=goVersion,proto3" json:"go_version,omitempty"`
+	// set of IP ranges this client can route
+	RouteableIps []string `protobuf:"bytes,20,rep,name=routeable_ips,json=routeableIps,proto3" json:"routeable_ips,omitempty"`
+	// set of ACL tags this node wants to claim
+	RequestTags []string `protobuf:"bytes,21,rep,name=request_tags,json=requestTags,proto3" json:"request_tags,omitempty"`
+	// if advertised
+	SshHostKeys []string `protobuf:"bytes,24,rep,name=ssh_host_keys,json=sshHostKeys,proto3" json:"ssh_host_keys,omitempty"`
+	Cloud       string   `protobuf:"bytes,25,opt,name=cloud,proto3" json:"cloud,omitempty"`
+	// if the client is running in userspace (netstack) mode
+	UserspaceVersion bool `protobuf:"varint,26,opt,name=userspace_version,json=userspaceVersion,proto3" json:"userspace_version,omitempty"`
+	// if the client's subnet router is running in userspace (netstack) mode
+	UserspaceRouter bool `protobuf:"varint,27,opt,name=userspace_router,json=userspaceRouter,proto3" json:"userspace_router,omitempty"`
 }
 
 func (x *HostInfo) Reset() {

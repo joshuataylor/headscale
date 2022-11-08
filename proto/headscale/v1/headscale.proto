@@ -9,7 +9,7 @@ import "headscale/v1/preauthkey.proto";
 import "headscale/v1/machine.proto";
 import "headscale/v1/routes.proto";
 import "headscale/v1/apikey.proto";
-// import "headscale/v1/device.proto";
+import "headscale/v1/device.proto";
 
 service HeadscaleService {
     // --- Namespace start ---
@@ -162,27 +162,33 @@ service HeadscaleService {
     // --- ApiKeys end ---
 
     // Implement Tailscale API
-    // rpc GetDevice(GetDeviceRequest) returns(GetDeviceResponse) {
-    //     option(google.api.http) = {
-    //         get : "/api/v1/device/{id}"
-    //     };
-    // }
+    rpc ListDevices(ListDevicesRequest) returns(ListDevicesResponse) {
+        option(google.api.http) = {
+            get : "/api/v1/device"
+        };
+    }
 
-    // rpc DeleteDevice(DeleteDeviceRequest) returns(DeleteDeviceResponse) {
-    //     option(google.api.http) = {
-    //         delete : "/api/v1/device/{id}"
-    //     };
-    // }
+     rpc GetDevice(GetDeviceRequest) returns(GetDeviceResponse) {
+         option(google.api.http) = {
+             get : "/api/v1/device/{id}"
+         };
+     }
 
-    // rpc GetDeviceRoutes(GetDeviceRoutesRequest) returns(GetDeviceRoutesResponse) {
-    //     option(google.api.http) = {
-    //         get : "/api/v1/device/{id}/routes"
-    //     };
-    // }
+     rpc DeleteDevice(DeleteDeviceRequest) returns(DeleteDeviceResponse) {
+         option(google.api.http) = {
+             delete : "/api/v1/device/{id}"
+         };
+     }
 
-    // rpc EnableDeviceRoutes(EnableDeviceRoutesRequest) returns(EnableDeviceRoutesResponse) {
-    //     option(google.api.http) = {
-    //         post : "/api/v1/device/{id}/routes"
-    //     };
-    // }
+     rpc GetDeviceRoutes(GetDeviceRoutesRequest) returns(GetDeviceRoutesResponse) {
+         option(google.api.http) = {
+             get : "/api/v1/device/{id}/routes"
+         };
+     }
+
+     rpc EnableDeviceRoutes(EnableDeviceRoutesRequest) returns(EnableDeviceRoutesResponse) {
+         option(google.api.http) = {
+             post : "/api/v1/device/{id}/routes"
+         };
+     }
 }

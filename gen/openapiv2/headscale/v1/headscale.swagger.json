@@ -134,6 +134,163 @@
         ]
       }
     },
+    "/api/v1/device": {
+      "get": {
+        "summary": "Implement Tailscale API",
+        "operationId": "HeadscaleService_ListDevices",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListDevicesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HeadscaleService"
+        ]
+      }
+    },
+    "/api/v1/device/{id}": {
+      "get": {
+        "operationId": "HeadscaleService_GetDevice",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetDeviceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HeadscaleService"
+        ]
+      },
+      "delete": {
+        "operationId": "HeadscaleService_DeleteDevice",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteDeviceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HeadscaleService"
+        ]
+      }
+    },
+    "/api/v1/device/{id}/routes": {
+      "get": {
+        "operationId": "HeadscaleService_GetDeviceRoutes",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetDeviceRoutesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HeadscaleService"
+        ]
+      },
+      "post": {
+        "operationId": "HeadscaleService_EnableDeviceRoutes",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1EnableDeviceRoutesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "routes",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "HeadscaleService"
+        ]
+      }
+    },
     "/api/v1/machine": {
       "get": {
         "operationId": "HeadscaleService_ListMachines",
@@ -776,6 +933,55 @@
         }
       }
     },
+    "v1ClientConnectivity": {
+      "type": "object",
+      "properties": {
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "derp": {
+          "type": "string"
+        },
+        "mappingVariesByDestIp": {
+          "type": "boolean"
+        },
+        "latency": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/v1Latency"
+          }
+        },
+        "clientSupports": {
+          "$ref": "#/definitions/v1ClientSupports"
+        }
+      }
+    },
+    "v1ClientSupports": {
+      "type": "object",
+      "properties": {
+        "hairPinning": {
+          "type": "boolean"
+        },
+        "ipv6": {
+          "type": "boolean"
+        },
+        "pcp": {
+          "type": "boolean"
+        },
+        "pmp": {
+          "type": "boolean"
+        },
+        "udp": {
+          "type": "boolean"
+        },
+        "upnp": {
+          "type": "boolean"
+        }
+      }
+    },
     "v1CreateApiKeyRequest": {
       "type": "object",
       "properties": {
@@ -869,11 +1075,108 @@
         }
       }
     },
+    "v1DeleteDeviceResponse": {
+      "type": "object"
+    },
     "v1DeleteMachineResponse": {
       "type": "object"
     },
     "v1DeleteNamespaceResponse": {
       "type": "object"
+    },
+    "v1Device": {
+      "type": "object",
+      "properties": {
+        "addresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "id": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "hostname": {
+          "type": "string"
+        },
+        "clientVersion": {
+          "type": "string"
+        },
+        "updateAvailable": {
+          "type": "boolean"
+        },
+        "os": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastSeen": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "keyExpiryDisabled": {
+          "type": "boolean"
+        },
+        "expires": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "authorized": {
+          "type": "boolean"
+        },
+        "isExternal": {
+          "type": "boolean"
+        },
+        "machineKey": {
+          "type": "string"
+        },
+        "nodeKey": {
+          "type": "string"
+        },
+        "blocksIncomingConnections": {
+          "type": "boolean"
+        },
+        "enabledRoutes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "advertisedRoutes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "clientConnectivity": {
+          "$ref": "#/definitions/v1ClientConnectivity"
+        }
+      }
+    },
+    "v1EnableDeviceRoutesResponse": {
+      "type": "object",
+      "properties": {
+        "enabledRoutes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "advertisedRoutes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     },
     "v1EnableMachineRoutesResponse": {
       "type": "object",
@@ -915,6 +1218,31 @@
     },
     "v1ExpirePreAuthKeyResponse": {
       "type": "object"
+    },
+    "v1GetDeviceResponse": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "$ref": "#/definitions/v1Device"
+        }
+      }
+    },
+    "v1GetDeviceRoutesResponse": {
+      "type": "object",
+      "properties": {
+        "enabledRoutes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "advertisedRoutes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     },
     "v1GetMachineResponse": {
       "type": "object",
@@ -964,73 +1292,103 @@
           "description": "OSVersion is the version of the OS, if available.\n\nFor Android, it's like \"10\", \"11\", \"12\", etc. For iOS and macOS it's like\n\"15.6.1\" or \"12.4.0\". For Windows it's like \"10.0.19044.1889\". For\nFreeBSD it's like \"12.3-STABLE\".\n\nFor Linux, prior to Tailscale 1.32, we jammed a bunch of fields into this\nstring on Linux, like \"Debian 10.4; kernel=xxx; container; env=kn\" and so\non. As of Tailscale 1.32, this is simply the kernel version on Linux, like\n\"5.10.0-17-amd64\"."
         },
         "container": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "whether the client is running in a container"
         },
         "env": {
-          "type": "string"
+          "type": "string",
+          "title": "a hostinfo.EnvType in string form"
         },
         "distro": {
-          "type": "string"
+          "type": "string",
+          "description": "\"debian\", \"ubuntu\", \"nixos\", ..."
         },
         "distroVersion": {
-          "type": "string"
+          "type": "string",
+          "description": "\"20.04\", ..."
         },
         "distroCodename": {
-          "type": "string"
+          "type": "string",
+          "description": "\"jammy\", \"bullseye\", ..."
         },
         "desktop": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "if a desktop was detected on Linux"
         },
         "package": {
-          "type": "string"
+          "type": "string",
+          "title": "Tailscale package to disambiguate (\"choco\", \"appstore\", etc; \"\" for unknown)"
         },
         "deviceModel": {
-          "type": "string"
+          "type": "string",
+          "title": "mobile phone model (\"Pixel 3a\", \"iPhone12,3\")"
         },
         "hostname": {
-          "type": "string"
+          "type": "string",
+          "title": "name of the host the client runs on"
         },
         "shieldsUp": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "indicates whether the host is blocking incoming connections"
         },
         "shareeNode": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "indicates this node exists in netmap because it's owned by a shared-to user"
         },
         "noLogsNoSupport": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "indicates that the user has opted out of sending logs and support"
         },
         "goArch": {
-          "type": "string"
+          "type": "string",
+          "title": "the host's GOARCH value (of the running binary)"
         },
         "goVersion": {
-          "type": "string"
+          "type": "string",
+          "title": "Go version binary was built with"
         },
         "routeableIps": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "title": "set of IP ranges this client can route"
         },
         "requestTags": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "title": "set of ACL tags this node wants to claim"
         },
         "sshHostKeys": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "title": "@todo When services is implemented, add it here\nservices = 22;\n@todo netinfo, code 23"
+          "title": "if advertised"
         },
         "cloud": {
           "type": "string"
         },
         "userspaceVersion": {
-          "type": "boolean"
+          "type": "boolean",
+          "title": "if the client is running in userspace (netstack) mode"
         },
         "userspaceRouter": {
+          "type": "boolean",
+          "title": "if the client's subnet router is running in userspace (netstack) mode"
+        }
+      }
+    },
+    "v1Latency": {
+      "type": "object",
+      "properties": {
+        "latencyMs": {
+          "type": "number",
+          "format": "float"
+        },
+        "preferred": {
           "type": "boolean"
         }
       }
@@ -1042,6 +1400,17 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1ApiKey"
+          }
+        }
+      }
+    },
+    "v1ListDevicesResponse": {
+      "type": "object",
+      "properties": {
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Device"
           }
         }
       }
